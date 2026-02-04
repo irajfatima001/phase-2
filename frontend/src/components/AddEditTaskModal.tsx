@@ -1,0 +1,120 @@
+import { useState, useEffect } from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Task } from '@/app/dashboard/page';
+import { motion, AnimatePresence } from 'framer-motion';
+
+interface AddEditTaskModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSave: (task: Omit<Task, 'id' | 'createdAt'> & { id?: number }) => void;
+  task?: Task | null;
+}
+
+export function AddEditTaskModal({ isOpen, onClose, onSave, task }: AddEditTaskModalProps) {
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [priority, setPriority] = useState<'low' | 'medium' | 'high'>('medium');
+
+  useEffect(() => {
+    if (task) {
+      setTitle(task.title);
+      setDescription(task.description);
+      setPriority(task.priority);
+    } else {
+      setTitle('');
+      setDescription('');
+      setPriority('medium');
+    }
+  }, [task]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!title.trim()) {
+      alert('Please enter a task title');
+      return;
+    }
+
+    onSave({
+      title: title.trim(),
+      description: description.trim(),
+      priority,
+      completed: task?.completed || false,
+      id: task?.id,
+    });
+  };
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <Dialog open={isOpen} onOpenChange={onClose}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>
+                {task ? 'Edit Task' : 'Add New Task'}
+              </DialogTitle>
+            </DialogHeader>
+            
+            <motion.form
+              onSubmit={handleSubmit}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="space-y-4"
+            >
+              <div>
+                <Label htmlFor="title">Title *</Label>
+                <Input
+                  id="title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="What needs to be done?"
+                  required
+                />
+              </div>
+              
+              <div>
+                <Label htmlFor="description">Description</Label>
+                <Textarea
+                  id="description"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="Add details..."
+                  rows={3}
+                />
+              </div>
+              
+              <div>
+                <Label htmlFor="priority">Priority</Label>
+                <Select value={priority} onValueChange={(value: 'low' | 'medium' | 'high') => setPriority(value)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select priority" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="low">Low</SelectItem>
+                    <SelectItem value="medium">Medium</SelectItem>
+                    <SelectItem value="high">High</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div className="flex justify-end gap-2 pt-4">
+                <Button type="button" variant="outline" onClick={onClose}>
+                  Cancel
+                </Button>
+                <Button type="submit">
+                  {task ? 'Update Task' : 'Add Task'}
+                </Button>
+              </div>
+            </motion.form>
+          </DialogContent>
+        </Dialog>
+      )}
+    </AnimatePresence>
+  );
+}
