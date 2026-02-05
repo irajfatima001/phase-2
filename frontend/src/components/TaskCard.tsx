@@ -1,4 +1,5 @@
-import { Task } from '@/app/dashboard/page';
+import { Task } from '@/lib/types';
+
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
