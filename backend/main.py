@@ -37,7 +37,7 @@ app.add_middleware(
         "http://127.0.0.1:3000",  # Alternative localhost format
         "http://localhost:3001",  # Alternative React dev server
         "http://127.0.0.1:3001",  # Alternative localhost format
-        "https://*.vercel.app",   # Vercel deployments
+        "https://phase-2-red.vercel.app/",   # Vercel deployments
         "https://*.netlify.app",  # Netlify deployments
     ],
     allow_credentials=True,
