@@ -1,6 +1,18 @@
 import axios from 'axios';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+// Ensure the API URL is properly formatted
+let API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
+// Ensure the URL has the proper protocol
+if (!API_BASE_URL.startsWith('http://') && !API_BASE_URL.startsWith('https://')) {
+  // If it doesn't start with http/https, assume it's a domain and prepend https
+  if (!API_BASE_URL.startsWith('//')) {
+    API_BASE_URL = 'https://' + API_BASE_URL;
+  } else {
+    // If it starts with //, it's a protocol-relative URL, prepend https
+    API_BASE_URL = 'https:' + API_BASE_URL;
+  }
+}
 
 // Create axios instance with default config
 const api = axios.create({

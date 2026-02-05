@@ -6,6 +6,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Card, CardContent } from '@/components/ui/card';
 import { MoreVertical, Edit, Trash2 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { format } from 'date-fns';
 
 interface TaskCardProps {
   task: Task;
@@ -21,6 +22,12 @@ export function TaskCard({ task, onEdit, onDelete, onToggleComplete }: TaskCardP
     high: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
   };
 
+  // Determine if task is completed based on status
+  const isCompleted = task.status === 'completed';
+
+  // Format the created date
+  const formattedDate = task.created_at ? format(new Date(task.created_at), 'MMM dd, yyyy') : '';
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -28,8 +35,8 @@ export function TaskCard({ task, onEdit, onDelete, onToggleComplete }: TaskCardP
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.3 }}
       className={`rounded-xl border ${
-        task.completed 
-          ? 'border-green-200 bg-green-50 dark:border-green-800/50 dark:bg-green-900/20' 
+        isCompleted
+          ? 'border-green-200 bg-green-50 dark:border-green-800/50 dark:bg-green-900/20'
           : 'border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-800'
       } shadow-sm overflow-hidden`}
     >
@@ -37,46 +44,50 @@ export function TaskCard({ task, onEdit, onDelete, onToggleComplete }: TaskCardP
         <div className="flex items-start gap-3">
           <div className="pt-1">
             <Checkbox
-              checked={task.completed}
+              checked={isCompleted}
               onCheckedChange={onToggleComplete}
               className={`h-5 w-5 rounded-full ${
-                task.completed 
-                  ? 'bg-green-500 border-green-500' 
+                isCompleted
+                  ? 'bg-green-500 border-green-500'
                   : 'border-gray-300 dark:border-gray-600'
               }`}
             />
           </div>
-          
+
           <div className="flex-1 min-w-0">
-            <h3 
+            <h3
               className={`font-semibold text-gray-900 dark:text-white truncate ${
-                task.completed ? 'line-through text-gray-500 dark:text-gray-500' : ''
+                isCompleted ? 'line-through text-gray-500 dark:text-gray-500' : ''
               }`}
             >
               {task.title}
             </h3>
-            
+
             {task.description && (
-              <p 
+              <p
                 className={`text-sm text-gray-600 dark:text-gray-400 mt-1 line-clamp-2 ${
-                  task.completed ? 'line-through text-gray-500 dark:text-gray-500' : ''
+                  isCompleted ? 'line-through text-gray-500 dark:text-gray-500' : ''
                 }`}
               >
                 {task.description}
               </p>
             )}
-            
+
             <div className="flex items-center gap-2 mt-3">
               <Badge variant="secondary" className={`${priorityColors[task.priority]} text-xs`}>
                 {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
               </Badge>
-              
+
+              <Badge variant="outline" className="text-xs capitalize">
+                {task.status.replace('_', ' ')}
+              </Badge>
+
               <span className="text-xs text-gray-500 dark:text-gray-400">
-                {task.createdAt.toLocaleDateString()}
+                {formattedDate}
               </span>
             </div>
           </div>
-          
+
           <div className="flex items-center gap-1">
             <Button
               variant="ghost"

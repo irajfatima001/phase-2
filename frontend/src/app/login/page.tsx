@@ -17,15 +17,59 @@ export default function LoginPage() {
     e.preventDefault();
     setLoading(true);
 
-    // Simulate login API call
     try {
-      // In a real app, you would call your authentication API here
-      // and store the JWT token in localStorage
-      localStorage.setItem('better-auth-token', 'fake-jwt-token-for-demo');
+      // Make real API call to backend for authentication
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password, // In a real app, this would be properly hashed
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || 'Login failed');
+      }
+
+      const data = await response.json();
+      const token = data.access_token;
+
+      // Store the JWT token in localStorage (required by backend)
+      localStorage.setItem('better-auth-token', token);
+
+      // Extract user info from token (in a real app, you might get this from the response)
+      try {
+        const tokenParts = token.split('.');
+        if (tokenParts.length === 3) {
+          const payload = JSON.parse(atob(tokenParts[1]));
+          const mockUser = {
+            id: payload.sub,
+            email: payload.email,
+            name: 'Demo User', // Could be retrieved from backend in a real app
+            createdAt: new Date().toISOString()
+          };
+          localStorage.setItem('better-auth-user', JSON.stringify(mockUser));
+        }
+      } catch (decodeError) {
+        console.error('Error decoding token:', decodeError);
+        // Fallback: create a mock user
+        const mockUser = {
+          id: 'user-' + Date.now(),
+          email: email,
+          name: 'Demo User',
+          createdAt: new Date().toISOString()
+        };
+        localStorage.setItem('better-auth-user', JSON.stringify(mockUser));
+      }
+
       router.push('/dashboard');
     } catch (error) {
       console.error('Login failed:', error);
-      alert('Login failed. Please try again.');
+      alert(error instanceof Error ? error.message : 'Login failed. Please try again.');
     } finally {
       setLoading(false);
     }

@@ -1,4 +1,4 @@
-import { Task } from '@/lib/types';
+import { Task, TaskFormValues } from '@/lib/types';
 
 import { toast } from 'sonner';
 
@@ -23,41 +23,49 @@ const taskStore = {
     listeners.forEach(listener => listener());
   },
 
-  addTask: (task: Omit<Task, 'id' | 'createdAt'>) => {
+  addTask: (task: TaskFormValues) => {
+    // In a real implementation, this would make an API call
+    // For now, keeping this for compatibility but it won't be used with API calls
     const newTask: Task = {
       ...task,
-      id: Math.max(0, ...tasks.map(t => t.id)) + 1,
-      createdAt: new Date(),
+      id: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15), // Random ID
+      priority: task.priority ?? "medium",
+      user_id: 'user123', // Placeholder
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      completed_at: null,
+      status: task.status || 'pending',
+      description: task.description || null,
     };
-    
+
     tasks = [...tasks, newTask];
     listeners.forEach(listener => listener());
     toast.success('Task added successfully!');
   },
 
   updateTask: (updatedTask: Task) => {
-    tasks = tasks.map(task => 
+    tasks = tasks.map(task =>
       task.id === updatedTask.id ? updatedTask : task
     );
     listeners.forEach(listener => listener());
     toast.success('Task updated successfully!');
   },
 
-  deleteTask: (taskId: number) => {
+  deleteTask: (taskId: string) => {
     tasks = tasks.filter(task => task.id !== taskId);
     listeners.forEach(listener => listener());
     toast.success('Task deleted successfully!');
   },
 
-  toggleTaskCompletion: (taskId: number) => {
-    tasks = tasks.map(task => 
-      task.id === taskId ? { ...task, completed: !task.completed } : task
+  toggleTaskCompletion: (taskId: string) => {
+    tasks = tasks.map(task =>
+      task.id === taskId ? { ...task, status: task.status === 'completed' ? 'pending' : 'completed' } : task
     );
     listeners.forEach(listener => listener());
-    
+
     const task = tasks.find(t => t.id === taskId);
     if (task) {
-      toast.success(`Task marked as ${task.completed ? 'incomplete' : 'complete'}!`);
+      toast.success(`Task marked as ${task.status}!`);
     }
   },
 };

@@ -5,36 +5,39 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Task } from '@/lib/types';
+import { Task, TaskFormValues } from '@/lib/types';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface AddEditTaskModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (task: Omit<Task, 'id' | 'createdAt'> & { id?: number }) => void;
+  onSave: (task: TaskFormValues) => void;
   task?: Task | null;
 }
 
 export function AddEditTaskModal({ isOpen, onClose, onSave, task }: AddEditTaskModalProps) {
   const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
+  const [description, setDescription] = useState<string | null>(null);
   const [priority, setPriority] = useState<'low' | 'medium' | 'high'>('medium');
+  const [status, setStatus] = useState<'pending' | 'in_progress' | 'completed'>('pending');
 
   useEffect(() => {
     if (task) {
       setTitle(task.title);
       setDescription(task.description);
       setPriority(task.priority);
+      setStatus(task.status);
     } else {
       setTitle('');
-      setDescription('');
+      setDescription(null);
       setPriority('medium');
+      setStatus('pending');
     }
   }, [task]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!title.trim()) {
       alert('Please enter a task title');
       return;
@@ -42,10 +45,9 @@ export function AddEditTaskModal({ isOpen, onClose, onSave, task }: AddEditTaskM
 
     onSave({
       title: title.trim(),
-      description: description.trim(),
+      description: description || undefined,
       priority,
-      completed: task?.completed || false,
-      id: task?.id,
+      status,
     });
   };
 
@@ -59,7 +61,7 @@ export function AddEditTaskModal({ isOpen, onClose, onSave, task }: AddEditTaskM
                 {task ? 'Edit Task' : 'Add New Task'}
               </DialogTitle>
             </DialogHeader>
-            
+
             <motion.form
               onSubmit={handleSubmit}
               initial={{ opacity: 0, y: 20 }}
@@ -77,18 +79,18 @@ export function AddEditTaskModal({ isOpen, onClose, onSave, task }: AddEditTaskM
                   required
                 />
               </div>
-              
+
               <div>
                 <Label htmlFor="description">Description</Label>
                 <Textarea
                   id="description"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
+                  value={description || ''}
+                  onChange={(e) => setDescription(e.target.value || null)}
                   placeholder="Add details..."
                   rows={3}
                 />
               </div>
-              
+
               <div>
                 <Label htmlFor="priority">Priority</Label>
                 <Select value={priority} onValueChange={(value: 'low' | 'medium' | 'high') => setPriority(value)}>
@@ -102,7 +104,21 @@ export function AddEditTaskModal({ isOpen, onClose, onSave, task }: AddEditTaskM
                   </SelectContent>
                 </Select>
               </div>
-              
+
+              <div>
+                <Label htmlFor="status">Status</Label>
+                <Select value={status} onValueChange={(value: 'pending' | 'in_progress' | 'completed') => setStatus(value)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="pending">Pending</SelectItem>
+                    <SelectItem value="in_progress">In Progress</SelectItem>
+                    <SelectItem value="completed">Completed</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
               <div className="flex justify-end gap-2 pt-4">
                 <Button type="button" variant="outline" onClick={onClose}>
                   Cancel
