@@ -1,96 +1,78 @@
 # Dependencies
 node_modules/
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.Python
-env/
-venv/
-ENV/
-.ENV
-env.bak/
-venv.bak/
-
-# Build outputs
-build/
-dist/
-*.egg-info/
-.next/
-.nuxt/
-public/dist/
-out/
 
 # Environment variables
-.env
-.env.local
-.env.dev
-.env.development
-.env.production
-.env.staging
-.env.test
-.env.testing
+.env*
+!.env.example
 
-# OS generated files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-desktop.ini
+# Build outputs
+dist/
+build/
+.next/
+out/
 
 # IDE
 .vscode/
 .idea/
 *.swp
 *.swo
-*~
+
+# OS
+.DS_Store
+Thumbs.db
 
 # Logs
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-lerna-debug.log*
 
 # Coverage
 coverage/
 .nyc_output/
 
-# Python
-*.so
-.Python
-*.pyc
-*.pyo
-__pycache__/
-.pytest_cache/
-.covers
+# Testing
+.jest/
 
-# Database
-*.db
-*.db-journal
+# Temporary files
+*.tmp
+*.temp
+.DS_Store
+lost+found/
 
-# Backend specific
-backend/.env
-backend/__pycache__/
-backend/*.pyc
-backend/venv/
-backend/env/
+# Next.js
+.next/
+out/
 
-# Frontend specific
-frontend/.next/
-frontend/node_modules/
-frontend/out/
-frontend/.env
-frontend/public/dist/
+# TypeScript
+*.tsbuildinfo
+*.bak
 
-# Backend Python virtual environment
-backend/venv/
-backend/env/
-backend/.env
+# Package manager
+node_modules/
+jspm_packages/
+bower_components/
+*.lock
 
-# Local configuration
-*.local
-config/local.json
+# Runtime
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# System
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Icon?
+apidoc/
+doc/
+docs/
+*.sublime-project
+*.sublime-workspace
+.env
