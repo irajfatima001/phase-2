@@ -1,4 +1,6 @@
 'use client';
+import { Task } from '@/lib/types';
+
 
 import { useState, useEffect } from 'react';
 import { TaskCard } from '@/components/TaskCard';
@@ -7,14 +9,7 @@ import { EmptyState } from '@/components/EmptyState';
 import { Button } from '@/components/ui/button';
 import { PlusIcon } from 'lucide-react';
 
-interface Task {
-  id: number;
-  title: string;
-  description: string;
-  completed: boolean;
-  priority: 'low' | 'medium' | 'high';
-  createdAt: Date;
-}
+
 
 export default function DashboardPage() {
   const [tasks, setTasks] = useState<Task[]>([]);

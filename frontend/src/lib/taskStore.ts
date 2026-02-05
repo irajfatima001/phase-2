@@ -1,4 +1,5 @@
-import { Task } from '@/app/dashboard/page';
+import { Task } from '@/lib/types';
+
 import { toast } from 'sonner';
 
 // This would typically be a Redux, Zustand, or React Context implementation
