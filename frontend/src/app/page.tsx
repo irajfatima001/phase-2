@@ -1,16 +1,11 @@
-'use client';
 
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+
+
+import { redirect} from 'next/navigation';
 
 export default function HomePage() {
-  const router = useRouter();
-
-  useEffect(() => {
-    // Redirect to login page on mount
-    router.push('/login');
-  }, [router]);
+  redirect('/login');
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800">
