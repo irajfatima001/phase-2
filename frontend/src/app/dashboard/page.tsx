@@ -60,22 +60,23 @@ export default function DashboardPage() {
   };
 
   const handleSaveTask = (taskData: Omit<Task, 'id' | 'createdAt'> & { id?: number }) => {
-    if (editingTask) {
-      // Update existing task
-      setTasks(tasks.map(task => 
-        task.id === editingTask.id ? { ...task, ...taskData } as Task : task
-      ));
-    } else {
-      // Add new task
-      const newTask: Task = {
-        ...taskData,
-        id: Math.max(...tasks.map(t => t.id), 0) + 1,
-        createdAt: new Date(),
-      };
-      setTasks([...tasks, newTask]);
-    }
-    setIsModalOpen(false);
-  };
+  if (editingTask) {
+    // Update existing task
+    setTasks(tasks.map(task =>
+      task.id === editingTask.id ? { ...task, ...taskData } as Task : task
+    ));
+  } else {
+    // Add new task
+    const newTask: Task = {
+      ...taskData,
+      id: Math.max(...tasks.map(t => t.id), 0) + 1,
+      createdAt: new Date(),
+    };
+    setTasks([...tasks, newTask]);
+  }
+  setIsModalOpen(false);
+};
+
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4 md:p-8">
